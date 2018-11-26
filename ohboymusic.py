@@ -18,7 +18,6 @@ import serial
 import time
 import os
 
-DEBUG = False
 
 class PianoStairs():
 
@@ -28,8 +27,8 @@ class PianoStairs():
     # Keep track of the previous values so that we can do smoothing
     self.previnputs = [False] * self.NUM_PINS
 
-    if not DEBUG:
-      self.ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+   
+    self.ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
     letters = ["c1", "d", "e", "f", "g", "a", "b", "c"]
 
     # remove this line if you plugged the sensors in top-to-bottom ;)
@@ -38,9 +37,6 @@ class PianoStairs():
     self.piano_notes = ["samples/"+letter+".wav" for letter in letters]
 
   def piano(self, i):
-    if DEBUG:
-      print "Debug Piano: ", i
-    else:
       # This assumes you're running on a Raspberry Pi with omxplayer installed.
       # Replace with appropriate system call to play a .wav file if not.
       os.system("omxplayer -o local " + self.piano_notes[i])
@@ -52,10 +48,7 @@ class PianoStairs():
     while True:
       line = ""
 
-      if DEBUG:
-        line = raw_input()
-      else:
-        line = self.ser.readline()
+      line = self.ser.readline()
 
       # Don't do anything if something weird happened w/ serial communication
       if len(line) < 8:
